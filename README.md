@@ -1,3 +1,3 @@
 # Interim Valuation Model
 
-A project for creating interim valuation models. 
+A project for creating interim valuation
