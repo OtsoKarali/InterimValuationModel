@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PE Valuation Prediction</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 50px; }
+        .form-container { max-width: 500px; }
+        label { display: block; margin: 10px 0 5px; }
+        input, select { width: 100%; padding: 8px; margin-bottom: 10px; }
+        button { padding: 10px 20px; background-color: #007BFF; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        .prediction { margin-top: 20px; font-weight: bold; }
+        .error { color: red; font-size: 0.9em; display: none; }
+    </style>
+    <script>
+        function validateInput(input, min, max, errorElementId) {
+            const value = parseFloat(input.value);
+            const errorElement = document.getElementById(errorElementId);
+            if (isNaN(value) || (min !== null && value < min) || (max !== null && value > max)) {
+                errorElement.style.display = 'block';
+                input.setCustomValidity("Invalid value");
+            } else {
+                errorElement.style.display = 'none';
+                input.setCustomValidity("");
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>PE Portfolio Company Valuation Prediction</h1>
+    <div class="form-container">
+        <form method="POST" onsubmit="return this.reportValidity()">
+            <label for="interim_multiple">Interim Multiple (≥ 0, e.g., 1.5):</label>
+            <input type="text" name="interim_multiple" placeholder="1.5" required
+                   pattern="[0-9]+(\.[0-9]+)?"
+                   oninput="validateInput(this, 0, null, 'interim-error')">
+            <div id="interim-error" class="error">Must be non-negative (≥ 0)</div>
+            
+            <label for="staleness_freq">Staleness Frequency (0 to 1, e.g., 0.2):</label>
+            <input type="text" name="staleness_freq" placeholder="0.2" required
+                   pattern="0(\.[0-9]+)?|1(\.0+)?"
+                   oninput="validateInput(this, 0, 1, 'staleness-error')">
+            <div id="staleness-error" class="error">Must be between 0 and 1</div>
+            
+            <label for="markdown_freq">Markdown Frequency (0 to 1, e.g., 0.3):</label>
+            <input type="text" name="markdown_freq" placeholder="0.3" required
+                   pattern="0(\.[0-9]+)?|1(\.0+)?"
+                   oninput="validateInput(this, 0, 1, 'markdown-error')">
+            <div id="markdown-error" class="error">Must be between 0 and 1</div>
+            
+            <label for="year">Year (1 to 5):</label>
+            <select name="year" required>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+            
+            <button type="submit">Predict</button>
+        </form>
+        
+        {% if prediction %}
+        <div class="prediction">{{ prediction }}</div>
+        {% endif %}
+    </div>
+</body>
+</html>
